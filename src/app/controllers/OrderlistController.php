@@ -1,0 +1,97 @@
+<?php
+
+use Phalcon\Mvc\Controller;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Phalcon\Http\Response;
+
+class OrderlistController extends Controller
+{
+    public function indexAction()
+    {
+        $user = $this->mongo->rest_api->users->find();
+        foreach ($user as $key => $value) {
+            $val = json_decode(json_encode($value), true);
+            // print_r($val['email']);
+        }
+        // die;
+        $login = $this->request->getPost();
+        // print_r($login);
+        // die;
+        $url = "http://192.168.2.55:8080/api/orderlist";
+        $bearer = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzAwMDAwMCwibmFtZSI6IkltcmFuIEtoYW4iLCJlbWFpbCI6ImlraWtAZ21haWwuY29tIiwiaWQiOiI2MjYyNmRhZDE1MzEyMjRmYTEwNjAxZDIiLCJyb2xlIjoiYWRtaW4ifQ.62zVeZBEom2FVW5bnAZV2mn50T8Up0gwQv5HlmwQdVg";
+        $key = "Admin_Key";
+        $jwt = JWT::decode($bearer, new Key($key, 'HS256'));
+        if ($jwt->role == $login['role'] && $jwt->email == $login['email']) {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+            $response = curl_exec($ch);
+            $res = json_decode($response, true);
+            $this->response->redirect('/index/testapi/');
+        } else {
+
+            if ($login['role'] == 'user') {
+                $this->response->redirect('/api');
+            }
+        }
+    }
+    public function orderAction()
+    {
+    }
+    public function updateAction()
+    {
+    }
+    public function listAction()
+    {
+        $admindb = $this->mongo->rest_api->users->find();
+        foreach ($admindb as $key => $value) {
+            $val = $value;
+        }
+        $orderlist = $this->mongo->rest_api->orders->find();
+        echo "<pre>";
+        $list = '';
+        $list .= "<table>
+                    <tr>
+                    <th>Customer Email</th>
+                    <th>Product ID</th>
+                    <th>Quantity</th>
+                    <th>Payment</th>
+                    <th>Status</th>
+
+                    </tr>";
+        foreach ($orderlist as $k => $v) {
+            $orderlst = json_decode(json_encode($v), true);
+            $list .= "<tr>
+                <td>" . $orderlst['customer_email'] . "</td>
+                <td>" . $orderlst['product_id'] . "</td>
+                <td>" . $orderlst['qauntity'] . "</td>
+                <td>" . $orderlst['payment'] . "</td>
+                <td>" . $orderlst['status'] . "</td>
+                </tr>";
+        }
+        $list .= "</table>";
+        $this->view->orderlist = $list;
+    }
+    public function addorderAction()
+    {
+        $orderdata = $this->request->getPost();
+        if (count($orderdata) > 0) {
+            $orderdata = $this->mongo->rest_api->orders->InsertOne([
+                'customer_email' => $orderdata['email'],
+                'product_id' => $orderdata['pid'],
+                'quantity' => $orderdata['quantity'],
+            ]);
+            // print_r($orderdata);
+            $response = new Response();
+            $response->setStatusCode(200, 'OK')
+                ->setJsonContent(
+                    [
+                        $orderdata
+                    ],
+                    JSON_PRETTY_PRINT
+                );
+                $this->response->redirect('/orderlist/list/');
+        }
+    }
+}
