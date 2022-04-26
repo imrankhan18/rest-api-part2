@@ -9,17 +9,18 @@ class OrderlistController extends Controller
 {
     public function indexAction()
     {
+        $ip = $this->config->ip;
         $user = $this->mongo->rest_api->users->find();
         foreach ($user as $key => $value) {
             $val = json_decode(json_encode($value), true);
         }
 
         $login = $this->request->getPost();
-        $url = "http://192.168.2.55:8080/api/orderlist";
-        $bearer = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzAwMDAwMCwibmFtZSI6IkltcmFuIEtoYW4iLCJlbWFpbCI6ImlraWtAZ21haWwuY29tIiwiaWQiOiI2MjYyNmRhZDE1MzEyMjRmYTEwNjAxZDIiLCJyb2xlIjoiYWRtaW4ifQ.62zVeZBEom2FVW5bnAZV2mn50T8Up0gwQv5HlmwQdVg";
-        $key = "Admin_Key";
-        $jwt = JWT::decode($bearer, new Key($key, 'HS256'));
-        if ($jwt->role == $login['role'] && $jwt->email == $login['email']) {
+        $url = $ip . "api/orderlist";
+        // $bearer = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzAwMDAwMCwibmFtZSI6IkltcmFuIEtoYW4iLCJlbWFpbCI6ImlraWtAZ21haWwuY29tIiwiaWQiOiI2MjYyNmRhZDE1MzEyMjRmYTEwNjAxZDIiLCJyb2xlIjoiYWRtaW4ifQ.62zVeZBEom2FVW5bnAZV2mn50T8Up0gwQv5HlmwQdVg";
+        // $key = "Admin_Key";
+        // $jwt = JWT::decode($bearer, new Key($key, 'HS256'));
+        if ($login['role'] != null && $login['email'] != null) {
             $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);

@@ -17,11 +17,12 @@ class TestapiController extends Controller
      */
     public function orderAction()
     {
+        $ip=$this->config->ip;
         $order = $this->request->getPost();
         // echo "<pre>";
         // print_r($order);
         // die;
-        $url = "http://192.168.2.55:8080/";
+        $url = $ip;
         $client = new Client(
             [
 
@@ -45,10 +46,11 @@ class TestapiController extends Controller
      */
     public function updatestatusAction()
     {
+        $ip=$this->config->ip;
         $orderstatus = $this->request->getPost();
         // print_r($orderstatus);
         // die;
-        $url = "http://192.168.2.55:8080/";
+        $url = $ip;
         $client = new Client(
             [
                 'base_uri' => $url,
@@ -75,10 +77,11 @@ class TestapiController extends Controller
      */
     public function addproductAction()
     {
+        $ip=$this->config->ip;
         $product = $this->request->getPost();
         // print_r($orderstatus);
         // die;
-        $url = "http://192.168.2.55:8080/";
+        $url = $ip;
         $client = new Client(
             [
                 'base_uri' => $url,
@@ -100,9 +103,10 @@ class TestapiController extends Controller
     }
     public function updateproductAction()
     {
+        $ip=$this->config->ip;
         $productup = $this->request->getPost();
 
-        $url = "http://192.168.2.55:8080/";
+        $url = $ip;
         $client = new Client(
             [
                 'base_uri' => $url,

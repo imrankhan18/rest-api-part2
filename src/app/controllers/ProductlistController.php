@@ -6,15 +6,16 @@ class ProductlistController extends Controller
 {
     public function indexAction()
     {
-
+        $ip=$this->config->ip;
         $url = "http://192.168.2.55:8080/api/productlist";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
+        echo "<pre>";
+        
         $res =json_decode($response, true);
-        // echo "<pre>";
-        // print_r($res['data']);
+        // print_r($res);
         // die;
         $this->view->productlist = $res['data'];
     }

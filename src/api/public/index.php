@@ -36,10 +36,6 @@ $toolbar = new Toolbar($profiler);
 $toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
 // echo $toolbar->render();
 
-// $pluginManager = new \Fabfuel\Prophiler\Plugin\Manager\Phalcon($profiler);
-// $pluginManager->register();
-
-
 $container->set(
     'mongo',
     function () {

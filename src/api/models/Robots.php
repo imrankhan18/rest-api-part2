@@ -5,6 +5,7 @@ namespace Api\Models;
 use Phalcon\Mvc\Controller;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
+use GuzzleHttp\Psr7\Response as Psr7Response;
 use Phalcon\Http\Response;
 
 class Robots extends Controller
@@ -68,20 +69,6 @@ class Robots extends Controller
             echo "Access denied";
         }
     }
-
-    // public function gettoken($role)
-    // {
-    //     $key = "Admin_Key";
-    //     $payload = array(
-    //         "iss" => "http://example.org",
-    //         "aud" => "http://example.com",
-    //         "iat" => 1356999524,
-    //         "nbf" => 1357000000,
-    //         "role" => $role,
-    //     );
-    //     $token = JWT::encode($payload, $key, 'HS256');
-    //     echo $token;
-    // }
     public function getlimit($per_page, $page)
     {
         $per_page = (int)$per_page;
@@ -190,8 +177,7 @@ class Robots extends Controller
         foreach ($productlist as $key => $value) {
             $val[] = $value;
         }
-        // print_r(($val));
-        // die;
+       
         $response = new Response();
         $response->setStatusCode(200, 'OK')
             ->setJsonContent(

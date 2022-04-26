@@ -7,8 +7,8 @@ class ProductlistController extends Controller
 {
     public function indexAction()
     {
-
-        $url = "http://192.168.2.55:8080/api/productlist";
+        $ip = $this->config->ip;
+        $url = $ip . "api/productlist";
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -97,5 +97,14 @@ class ProductlistController extends Controller
                 JSON_PRETTY_PRINT
             );
         return $response;
+    }
+    public function recieveResponseAction()
+    {
+        $response = $this->request->getPost();
+        $response = $response[0];
+
+
+        $response = array_merge($response, ['_id' => (new \MongoDB\BSON\ObjectId($response['_id']['$oid']))]);
+        $this->mongo->Frontend->products->insertOne($response);
     }
 }

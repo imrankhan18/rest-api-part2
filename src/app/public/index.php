@@ -19,8 +19,6 @@ $debug->listen(1, true);
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH);
-// echo APP_PATH;
-// die;
 $config = new Config([]);
 $loader = new Loader();
 $loader->registerDirs(
@@ -42,10 +40,6 @@ $application = new Application($container);
 $profiler = new Profiler();
 $toolbar = new Toolbar($profiler);
 $toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
-
-
-// $pluginManager = new \Fabfuel\Prophiler\Plugin\Manager\Phalcon($profiler);
-// $pluginManager->register();
 
 $container->set(
     'mongo',
@@ -75,6 +69,8 @@ $container->set(
         return $url;
     }
 );
+$config= new Config(['ip'=>'http://192.168.2.55:8080/']);
+$container->set('config', $config);
 $container->setShared('profiler', $profiler);
 $container->setShared('toolbar', $toolbar);
 

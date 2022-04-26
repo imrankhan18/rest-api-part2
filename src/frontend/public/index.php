@@ -14,26 +14,12 @@ use Fabfuel\Prophiler\Toolbar;
 
 require_once "../../vendor/autoload.php";
 
-$debug = new Debug();
-$debug->listen(1, true);
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/app');
 
-
-
+$debug = new Debug();
+$debug->listen(false, true);
 $config = new Config([]);
-
-
-// $container->set(
-//     'url',
-//     function () {
-//         $url = new Url();
-//         $url->setBaseUri('/');
-//         return $url;
-//     }
-// );
-// $container->setShared('profiler', $profiler);
-
 $loader = new Loader();
 $loader->registerDirs(
     [
@@ -47,10 +33,6 @@ $application = new Application($container);
 $profiler = new Profiler();
 $toolbar = new Toolbar($profiler);
 $toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
-
-
-// $pluginManager = new \Fabfuel\Prophiler\Plugin\Manager\Phalcon($profiler);
-// $pluginManager->register();
 
 $container->set(
     'mongo',
@@ -80,9 +62,11 @@ $container->set(
         return $url;
     }
 );
+$config =new config(['ip'=>'http://192.168.2.55:8080/']);
+$container->set('config', $config);
 $container->setShared('profiler', $profiler);
 $container->setShared('toolbar', $toolbar);
-// echo 1/0;
+
 try {
     //Handle the request
     $response = $application->handle(
