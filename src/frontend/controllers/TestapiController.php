@@ -3,8 +3,9 @@ require_once '../../vendor/autoload.php';
 
 use Phalcon\Mvc\Controller;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Psr7\Response;
+use Phalcon\Http\Response;
+
+
 
 class TestapiController extends Controller
 {
@@ -34,7 +35,7 @@ class TestapiController extends Controller
         );
         $response = $client->request('POST', '/api/addorder', ['form_params' => $order]);
         $response = json_decode($response->getBody()->getContents(), true);
-        // $this->response->redirect('/frontend/productlist/list/');
+        $this->response->redirect('/frontend/productlist/list');
     }
     /**
      * update order status
@@ -53,9 +54,18 @@ class TestapiController extends Controller
             ]
 
         );
-        $response = $client->request('PUT', '/api/order/update', ['form_params' => $orderstatus]);
-        $response = json_decode($response->getBody()->getContents(), true);
-        echo "Order Status Updated Sucessfuly!!!";
+        $res = $client->request('PUT', '/api/order/update', ['form_params' => $orderstatus]);
+        $res = json_decode($res->getBody()->getContents(), true);
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'msg' => 'order status updated successfully'
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     /**
      * add products
@@ -74,10 +84,17 @@ class TestapiController extends Controller
             ]
 
         );
-        $response = $client->request('POST', '/api/products/add', ['form_params' => $product]);
-        $response = json_decode($response->getBody()->getContents(), true);
-        echo "Product Added Sucessfuly!!!";
+        $res = $client->request('POST', '/api/products/add', ['form_params' => $product]);
+        $res = json_decode($res->getBody()->getContents(), true);
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => 'Product Added Sucessfuly!!!'
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
-
-    
 }

@@ -24,8 +24,18 @@ class Robots extends Controller
             'category' => $order['category'],
             'quantity' => $order['quantity'],
         ]);
-        echo "<pre>";
-        print_r($data);
+        // echo "<pre>";
+        // print_r();
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => $$data,
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     public function search($name = "")
     {
@@ -41,7 +51,17 @@ class Robots extends Controller
                 // die;
                 foreach ($data as $k => $v) {
                     $getdata = json_encode($v);
-                    echo $getdata . "<br>";
+                    // echo $getdata . "<br>";
+                    $response = new Response();
+                    $response->setStatusCode(200, 'OK')
+                        ->setJsonContent(
+                            [
+                                'status' => 200,
+                                'data' => $getdata,
+                            ],
+                            JSON_PRETTY_PRINT
+                        );
+                    return $response;
                 }
             }
         } else {
@@ -69,7 +89,17 @@ class Robots extends Controller
         $results = ($page - 1) * $per_page;
         $search = $this->mongo->rest_api->products->find([], ['limit' => $per_page, 'skip' => $results])->toArray();
         foreach ($search as $value) {
-            print_r(json_encode($value) . "<br>");
+            // print_r(json_encode($value) . "<br>");
+            $response = new Response();
+            $response->setStatusCode(200, 'OK')
+                ->setJsonContent(
+                    [
+                        'status' => 200,
+                        'data' => $value,
+                    ],
+                    JSON_PRETTY_PRINT
+                );
+            return $response;
         }
     }
     public function token()
@@ -110,29 +140,6 @@ class Robots extends Controller
             echo "fill Details!!!";
         }
     }
-    public function order()
-    {
-        // $order = $this->request->getPost();
-        // $key = "Admin_Key";
-        // $token = $this->request->getHeaders();
-        // // print_r($token);
-        // // die;
-        // $bearer = $token['Token'];
-
-        // $jwt = JWT::decode($bearer, new Key($key, 'HS256'));
-        // if (isset($jwt)) {
-        //     $data = $this->mongo->rest_api->orders->InsertOne([
-        //         'customer id' => $jwt->id,
-        //         'customer_name' => $jwt->name,
-        //         'product_id' => $order['pid'],
-        //         'product_name' => $order['pname'],
-        //         'category' => $order['cat'],
-        //         'quantity' => $order['quantity'],
-        //     ]);
-
-        //     print_r($data);
-        // }
-    }
     public function updateorder()
     {
         parse_str(file_get_contents("php://input"), $value);
@@ -148,6 +155,16 @@ class Robots extends Controller
                 ]
             ]
         );
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => 'updated successfully',
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     public function list()
     {
@@ -156,6 +173,16 @@ class Robots extends Controller
             $val[] = $value;
         }
         echo json_encode($val);
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => $val,
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     public function productlist()
     {
@@ -163,7 +190,18 @@ class Robots extends Controller
         foreach ($productlist as $key => $value) {
             $val[] = $value;
         }
-        echo json_encode($val);
+        // print_r(($val));
+        // die;
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => $val,
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     public function addorder()
     {
@@ -178,7 +216,16 @@ class Robots extends Controller
                 'product_id' => $data['id'],
                 'quantity' => $data['qty'],
             ]);
-            print_r($data);
+            $response = new Response();
+            $response->setStatusCode(200, 'OK')
+                ->setJsonContent(
+                    [
+                        'status' => 200,
+                        'data' => $data,
+                    ],
+                    JSON_PRETTY_PRINT
+                );
+            return $response;
         }
     }
 }

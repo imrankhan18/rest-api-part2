@@ -1,6 +1,7 @@
 <?php
 
 use Phalcon\Mvc\Controller;
+use Phalcon\Http\Response;
 
 class ProductlistController extends Controller
 {
@@ -30,16 +31,20 @@ class ProductlistController extends Controller
     public function listAction()
     {
         $login = $this->request->getPost();
+        $logindb = $this->mongo->Frontend->admin->find();
+        foreach ($logindb as $key => $value) {
+        }
+
         if (count($login) > 0) {
-            if ($login['role'] == 'admin' && $login['email'] != '' && $login['password'] != '') {
+            if ($login['role'] == $value['role'] && $login['email'] == $value['email'] && $login['password'] == $value['password']) {
                 $list = $this->mongo->Frontend->products->find();
                 foreach ($list as $k => $v) {
                     $val[] = json_decode(json_encode($v), true);
                 }
                 $this->view->productlist = $val;
-            } else {
-                echo "fill correct details";
             }
+        } else {
+            echo "fill correct details";
         }
     }
     public function updatestockAction()
@@ -58,6 +63,16 @@ class ProductlistController extends Controller
             ]
 
         );
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'message' => 'Stock updated sucessfully',
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
     public function addproductAction()
     {
@@ -72,5 +87,15 @@ class ProductlistController extends Controller
 
             ]
         );
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'message' => 'Product added sucessfully',
+                ],
+                JSON_PRETTY_PRINT
+            );
+        return $response;
     }
 }

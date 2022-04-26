@@ -8,20 +8,26 @@ use Phalcon\Loader;
 use Phalcon\Url;
 use Phalcon\Events\Manager as EventsManager;
 use App\Listener\Webhooks;
+use Phalcon\Debug;
+use Fabfuel\Prophiler\Profiler;
+use Fabfuel\Prophiler\Toolbar;
+
+require_once "../../vendor/autoload.php";
+
+$debug = new Debug();
+$debug->listen(1, true);
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH);
 // echo APP_PATH;
 // die;
 $config = new Config([]);
-
-require_once "../../vendor/autoload.php";
 $loader = new Loader();
 $loader->registerDirs(
     [
         BASE_PATH . "/controllers/",
-        BASE_PATH. "/models/",
-        BASE_PATH. "/webhooks/",
+        BASE_PATH . "/models/",
+        BASE_PATH . "/webhooks/",
     ]
 );
 $loader->registerNamespaces(
@@ -33,6 +39,13 @@ $loader->registerNamespaces(
 $loader->register();
 $container = new FactoryDefault();
 $application = new Application($container);
+$profiler = new Profiler();
+$toolbar = new Toolbar($profiler);
+$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+
+
+// $pluginManager = new \Fabfuel\Prophiler\Plugin\Manager\Phalcon($profiler);
+// $pluginManager->register();
 
 $container->set(
     'mongo',
@@ -62,6 +75,8 @@ $container->set(
         return $url;
     }
 );
+$container->setShared('profiler', $profiler);
+$container->setShared('toolbar', $toolbar);
 
 $eventsManager = new EventsManager();
 $container->set(
@@ -84,5 +99,4 @@ try {
     $response->send();
 } catch (\Exception $e) {
     echo 'Exception: ', $e->getMessage();
-    
 }

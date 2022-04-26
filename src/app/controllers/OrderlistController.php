@@ -12,12 +12,9 @@ class OrderlistController extends Controller
         $user = $this->mongo->rest_api->users->find();
         foreach ($user as $key => $value) {
             $val = json_decode(json_encode($value), true);
-            // print_r($val['email']);
         }
-        // die;
+
         $login = $this->request->getPost();
-        // print_r($login);
-        // die;
         $url = "http://192.168.2.55:8080/api/orderlist";
         $bearer = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vZXhhbXBsZS5vcmciLCJhdWQiOiJodHRwOi8vZXhhbXBsZS5jb20iLCJpYXQiOjEzNTY5OTk1MjQsIm5iZiI6MTM1NzAwMDAwMCwibmFtZSI6IkltcmFuIEtoYW4iLCJlbWFpbCI6ImlraWtAZ21haWwuY29tIiwiaWQiOiI2MjYyNmRhZDE1MzEyMjRmYTEwNjAxZDIiLCJyb2xlIjoiYWRtaW4ifQ.62zVeZBEom2FVW5bnAZV2mn50T8Up0gwQv5HlmwQdVg";
         $key = "Admin_Key";
@@ -65,7 +62,7 @@ class OrderlistController extends Controller
             $list .= "<tr>
                 <td>" . $orderlst['customer_email'] . "</td>
                 <td>" . $orderlst['product_id'] . "</td>
-                <td>" . $orderlst['qauntity'] . "</td>
+                <td>" . $orderlst['quantity'] . "</td>
                 <td>" . $orderlst['payment'] . "</td>
                 <td>" . $orderlst['status'] . "</td>
                 </tr>";
@@ -91,7 +88,8 @@ class OrderlistController extends Controller
                     ],
                     JSON_PRETTY_PRINT
                 );
-                $this->response->redirect('/orderlist/list/');
+            return $response;
+            $this->response->redirect('/orderlist/list/');
         }
     }
 }

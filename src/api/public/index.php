@@ -8,14 +8,19 @@ use Phalcon\Loader;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Phalcon\Mvc\View\Simple;
+use Phalcon\Debug;
+use Fabfuel\Prophiler\Profiler;
+use Fabfuel\Prophiler\Toolbar;
+
+require_once "../../vendor/autoload.php";
+
+$debug = new Debug();
+$debug->listen(1, true);
 
 define('BASE_PATH', dirname(__DIR__));
 define('APP_PATH', BASE_PATH . '/api');
 
 $config = new Config([]);
-
-
-require_once "../../vendor/autoload.php";
 $loader = new Loader();
 $loader->registerNamespaces(
     [
@@ -26,6 +31,15 @@ $loader->register();
 
 $container = new FactoryDefault();
 $application = new Application($container);
+$profiler = new Profiler();
+$toolbar = new Toolbar($profiler);
+$toolbar->addDataCollector(new \Fabfuel\Prophiler\DataCollector\Request());
+// echo $toolbar->render();
+
+// $pluginManager = new \Fabfuel\Prophiler\Plugin\Manager\Phalcon($profiler);
+// $pluginManager->register();
+
+
 $container->set(
     'mongo',
     function () {
@@ -145,3 +159,5 @@ $app->get(
 $app->handle(
     $_SERVER["REQUEST_URI"]
 );
+$container->setShared('profiler', $profiler);
+$container->setShared('toolbar', $toolbar);

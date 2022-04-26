@@ -12,8 +12,11 @@ class ProductlistController extends Controller
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $response = curl_exec($ch);
-        $res = json_decode($response, true);
-        $this->view->productlist = $res;
+        $res =json_decode($response, true);
+        // echo "<pre>";
+        // print_r($res['data']);
+        // die;
+        $this->view->productlist = $res['data'];
     }
     public function addAction()
     {

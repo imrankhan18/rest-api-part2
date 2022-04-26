@@ -3,7 +3,7 @@ require_once '../../vendor/autoload.php';
 
 use Phalcon\Mvc\Controller;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
+use Phalcon\Http\Response;
 
 class TestapiController extends Controller
 {
@@ -55,9 +55,18 @@ class TestapiController extends Controller
             ]
 
         );
-        $response = $client->request('PUT', '/api/order/update', ['form_params' => $orderstatus]);
-        $response = json_decode($response->getBody()->getContents(), true);
-        echo "Order Status Updated Sucessfuly!!!";
+        $res = $client->request('PUT', '/api/order/update', ['form_params' => $orderstatus]);
+        $res = json_decode($res->getBody()->getContents(), true);
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'data' => 'Order Status Updated Sucessfuly!!!',
+                ],
+                JSON_PRETTY_PRINT
+            );
+            return $response;
     }
     /**
      * add products
@@ -76,14 +85,23 @@ class TestapiController extends Controller
             ]
 
         );
-        $response = $client->request('POST', '/api/products/add', ['form_params' => $product]);
-        $response = json_decode($response->getBody()->getContents(), true);
-        echo "Product Added Sucessfuly!!!";
+        $res = $client->request('POST', '/api/products/add', ['form_params' => $product]);
+        $res = json_decode($res->getBody()->getContents(), true);
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'message' => 'Product added sucessfully',
+                ],
+                JSON_PRETTY_PRINT
+            );
+            return $response;
     }
     public function updateproductAction()
     {
         $productup = $this->request->getPost();
-       
+
         $url = "http://192.168.2.55:8080/";
         $client = new Client(
             [
@@ -92,11 +110,17 @@ class TestapiController extends Controller
 
         );
         $response = $client->request('POST', '/api/products/update', ['form_params' => $productup]);
-        echo "<pre>";
-        // print_r($response);
-        // die;
         $response = json_decode($response->getBody()->getContents(), true);
         $this->response->redirect('/productlist');
-        echo "Product Updated Sucessfuly!!!";
+        $response = new Response();
+        $response->setStatusCode(200, 'OK')
+            ->setJsonContent(
+                [
+                    'status' => 200,
+                    'message' => 'Product Updated sucessfully',
+                ],
+                JSON_PRETTY_PRINT
+            );
+            return $response;
     }
 }
